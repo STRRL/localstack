@@ -24,7 +24,7 @@ setup-venv:
 
 install-venv:
 	make setup-venv && \
-		test ! -e requirements.txt || ($(VENV_RUN); $(PIP_CMD) -q install -r requirements.txt)
+		test ! -e requirements.txt || ($(VENV_RUN); $(PIP_CMD) install -r requirements.txt)
 
 init:              ## Initialize the infrastructure, make sure all libs are downloaded
 	$(VENV_RUN); PYTHONPATH=. exec python localstack/services/install.py libs
@@ -58,7 +58,7 @@ docker-build:      ## Build Docker image
 	# prepare
 	test -e 'localstack/infra/stepfunctions/StepFunctionsLocal.jar' || make init
 	# start build
-	docker build --build-arg LOCALSTACK_BUILD_GIT_HASH=$(shell git rev-parse --short HEAD) \
+	docker build --no-cache --build-arg LOCALSTACK_BUILD_GIT_HASH=$(shell git rev-parse --short HEAD) \
 	--build-arg=LOCALSTACK_BUILD_DATE=$(shell date -u +"%Y-%m-%d") -t $(IMAGE_NAME) .
 
 docker-squash:
